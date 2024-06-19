@@ -28,8 +28,8 @@ class SettingsActivity : AppCompatActivity() {
                 val externalFilesDir = getExternalFilesDir(null)
                 externalFilesDir?.let {
                     deleteCsvFiles(it)
-                    createEmptyDataCsv(it)
                 }
+                setResult(RESULT_OK)
                 finish()
             }
             .create()
@@ -49,10 +49,5 @@ class SettingsActivity : AppCompatActivity() {
                 it.delete()
             }
         }
-    }
-
-    private fun createEmptyDataCsv(directory: File) {
-        val csvFile = File(directory, "_data.csv")
-        csvFile.createNewFile()
     }
 }

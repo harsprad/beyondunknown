@@ -2,45 +2,43 @@ package com.example.beyondunknown
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.beyondunknown.databinding.ActivityMainBinding
-import java.io.BufferedReader
-import java.io.BufferedWriter
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var adapter: BookListAdapter
+    private lateinit var bookList: MutableList<Book>
+
+    private val settingsLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // Reload CSV data and refresh RecyclerView
+            loadCsv()
+            adapter.notifyDataSetChanged()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val csvMain = File(getExternalFilesDir(null), "_data.csv")
+        bookList = mutableListOf()
+        loadCsv()
 
-        var booksData : List<String> = listOf()
-
-        if (csvMain.exists()) {
-            booksData = loadCsv(csvMain)
-        } else {
-            csvMain.createNewFile()
-        }
-
-        val bookList = booksData.map { str -> stringToBook(str) }.toMutableList()
-
-        val adapter = BookListAdapter(bookList)
+        adapter = BookListAdapter(bookList)
         binding.rvBookList.adapter = adapter
         binding.rvBookList.layoutManager = LinearLayoutManager(this)
 
         binding.btnSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
+            settingsLauncher.launch(intent)
         }
 
         binding.btnAddBook.setOnClickListener {
@@ -50,30 +48,31 @@ class MainActivity : AppCompatActivity() {
             bookList.add(0,book)
             adapter.notifyItemInserted(0)
 
-            val fileOutputStream = FileOutputStream(csvMain, true)
-            val outputStreamWriter = OutputStreamWriter(fileOutputStream)
-            BufferedWriter(outputStreamWriter).use { writer -> writer.append("$title,$path.csv\n") }
-            fileOutputStream.close()
+            val csvFile = File(getExternalFilesDir(null), "_data.csv")
+            csvFile.appendText("${replaceComma(title)},$path.csv\n")
 
             binding.etAddBook.text.clear()
         }
     }
 
-    private fun loadCsv(csvFile: File) : List<String> {
-        val fileInputStream = FileInputStream(csvFile)
-        val inputStreamReader = InputStreamReader(fileInputStream)
-        val bufferedReader = BufferedReader(inputStreamReader)
-        val result : MutableList<String> = mutableListOf()
-        bufferedReader.useLines { lines -> lines.forEach { result.add(it) } }
-        bufferedReader.close()
-        inputStreamReader.close()
-        fileInputStream.close()
-        return result.toList()
+    private fun loadCsv() {
+        val csvFile = File(getExternalFilesDir(null), "_data.csv")
+        bookList.clear()
+        if (csvFile.exists()) {
+            val lines = csvFile.bufferedReader().useLines { it.toList() }
+            lines.forEach { line -> bookList.add(stringToBook(line)) }
+        } else {
+            csvFile.createNewFile()
+        }
     }
 
     private fun stringToBook(str: String) : Book {
         val bookData = str.split(",")
-        return Book(bookData[0].replace("{comma}",","), bookData[1])
+        return if (bookData.size == 2) {
+            Book(bookData[0].replace("{comma}", ","), bookData[1])
+        } else {
+            Book("Split error", "_error.csv")
+        }
     }
 
     private fun stringToPathName(str: String) : String {
