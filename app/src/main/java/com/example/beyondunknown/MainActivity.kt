@@ -39,9 +39,7 @@ class MainActivity : AppCompatActivity() {
         binding.rvBookList.layoutManager = LinearLayoutManager(this)
 
         binding.btnSettings.setOnClickListener {
-            val book = bookList[0]
             val intent = Intent(this, SettingsActivity::class.java)
-            intent.putExtra("EXTRA_BOOK_TITLE", book)
             startActivity(intent)
         }
 
@@ -75,12 +73,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun stringToBook(str: String) : Book {
         val bookData = str.split(",")
-        return Book(bookData[0], bookData[1])
+        return Book(bookData[0].replace("{comma}",","), bookData[1])
     }
 
     private fun stringToPathName(str: String) : String {
         val regex = Regex("""[^a-zA-z ]+""")
         return str.replace(regex, "")
             .replace(" ", "-")
+    }
+
+    private fun replaceComma(str: String) : String {
+        return str.replace(",", "{comma}")
     }
 }
