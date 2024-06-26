@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: BookListAdapter
-    private lateinit var bookList: MutableList<Book>
+    private var bookList: MutableList<Book> = mutableListOf()
 
     private val settingsLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        bookList = mutableListOf()
         loadCsv()
 
         adapter = BookListAdapter(bookList)
@@ -59,20 +58,17 @@ class MainActivity : AppCompatActivity() {
         val csvFile = File(getExternalFilesDir(null), "_data.csv")
         bookList.clear()
         if (csvFile.exists()) {
-            val lines = csvFile.bufferedReader().useLines { it.toList() }
-            lines.forEach { line -> bookList.add(stringToBook(line)) }
+            csvFile.bufferedReader().useLines { lines ->
+                lines.forEach { line -> bookList.add(stringToBook(line)) }
+            }
         } else {
             csvFile.createNewFile()
         }
     }
 
     private fun stringToBook(str: String) : Book {
-        val bookData = str.split(",")
-        return if (bookData.size == 2) {
-            Book(bookData[0].replace("{comma}", ","), bookData[1])
-        } else {
-            Book("Split error", "_error.csv")
-        }
+        val (title, path) = str.split(",", limit = 2)
+        return Book(title.replace("{comma}", ","), path)
     }
 
     private fun stringToPathName(str: String) : String {
