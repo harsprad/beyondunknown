@@ -48,13 +48,7 @@ class SecondaryActivity : AppCompatActivity() {
     }
 
     private fun loadCsv() {
-        val fileInputStream = FileInputStream(csvFile)
-        val inputStreamReader = InputStreamReader(fileInputStream)
-        val bufferedReader = BufferedReader(inputStreamReader)
-        bufferedReader.useLines { lines -> lines.forEach { csvPages.add(it) } }
-        bufferedReader.close()
-        inputStreamReader.close()
-        fileInputStream.close()
+        csvFile.bufferedReader().useLines { lines -> lines.forEach { csvPages.add(it) } }
     }
 
     private fun updatePageNumber() {
