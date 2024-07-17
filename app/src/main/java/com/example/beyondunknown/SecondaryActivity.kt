@@ -3,6 +3,8 @@ package com.example.beyondunknown
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.beyondunknown.databinding.ActivitySecondaryBinding
 import java.io.File
@@ -40,6 +42,29 @@ class SecondaryActivity : AppCompatActivity() {
         binding.btnSave.setOnClickListener { saveToCsv() }
         binding.btnPrevious.setOnClickListener { navigatePage(-1) }
         binding.btnNext.setOnClickListener { navigatePage(1) }
+
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(
+            true
+        ) {
+            override fun handleOnBackPressed() {
+                showExitConfirmationDialogue()
+            }
+        })
+    }
+
+    private fun showExitConfirmationDialogue() {
+        AlertDialog.Builder(this)
+            .setTitle("Exiting on possible unsaved data")
+            .setMessage("Are you sure you want to leave?")
+            .setIcon(R.drawable.ic_delete_data)
+            .setPositiveButton("No") { dialogue, _ ->
+                dialogue.dismiss()
+            }
+            .setNegativeButton("Yes") { _, _ ->
+                finish()
+            }
+            .show()
     }
 
     private fun loadCsv() {
