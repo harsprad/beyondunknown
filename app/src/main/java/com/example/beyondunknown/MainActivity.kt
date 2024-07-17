@@ -43,9 +43,10 @@ class MainActivity : AppCompatActivity() {
         binding.btnAddBook.setOnClickListener {
             val title = binding.etAddBook.text.toString()
             val path = stringToPathName(title)
-            val book = Book(title, "$path.csv")
-            bookList.add(0,book)
-            adapter.notifyItemInserted(0)
+            val newBook = Book(title, "$path.csv")
+            val newBookIndex = 0
+            bookList.add(newBookIndex,newBook)
+            adapter.notifyItemInserted(newBookIndex)
 
             val csvFile = File(getExternalFilesDir(null), "_data.csv")
             csvFile.appendText("${replaceComma(title)},$path.csv\n")
