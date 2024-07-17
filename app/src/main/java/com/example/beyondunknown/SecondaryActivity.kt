@@ -14,7 +14,7 @@ class SecondaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySecondaryBinding
     private var currentPage = 0
     private lateinit var csvFile: File
-    private var csvPages: MutableList<String> = mutableListOf()
+    private var pageList: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +34,7 @@ class SecondaryActivity : AppCompatActivity() {
             csvFile.createNewFile()
         }
 
-        currentPage = csvPages.size
+        currentPage = pageList.size
         updatePageNumber()
 
         binding.btnSave.setOnClickListener { saveToCsv() }
@@ -43,14 +43,14 @@ class SecondaryActivity : AppCompatActivity() {
     }
 
     private fun loadCsv() {
-        csvFile.bufferedReader().useLines { lines -> lines.forEach { csvPages.add(it) } }
+        csvFile.bufferedReader().useLines { lines -> lines.forEach { pageList.add(it) } }
     }
 
     private fun updatePageNumber() {
         val pageFieldText = "Page: ${currentPage + 1}"
         binding.tvPageNumber.text = pageFieldText
-        if (currentPage in csvPages.indices) {
-            val page = csvPages[currentPage].split(",")
+        if (currentPage in pageList.indices) {
+            val page = pageList[currentPage].split(",")
             binding.etNumberInput1.text.clear()
             binding.etNumberInput2.text.clear()
             binding.etNumberInput1.setHint(page[0])
@@ -77,7 +77,7 @@ class SecondaryActivity : AppCompatActivity() {
         val fileOutputStream = FileOutputStream(csvFile)
         val outputStreamWriter = OutputStreamWriter(fileOutputStream)
         outputStreamWriter.use { writer ->
-            csvPages.forEach { writer.append("$it\n") }
+            pageList.forEach { writer.append("$it\n") }
         }
         fileOutputStream.close()
     }
@@ -88,8 +88,8 @@ class SecondaryActivity : AppCompatActivity() {
         if (currentPage < 0) {
             currentPage = 0
             Toast.makeText(this, "Already at the first page", Toast.LENGTH_SHORT).show()
-        } else if (currentPage > csvPages.size) {
-            currentPage = csvPages.size
+        } else if (currentPage > pageList.size) {
+            currentPage = pageList.size
             Toast.makeText(this, "Already at the latest page", Toast.LENGTH_SHORT).show()
         } else if (currentPage > 45) {
             currentPage = 45
@@ -117,10 +117,10 @@ class SecondaryActivity : AppCompatActivity() {
             }
 
             val page = "$number1,$number2"
-            if (currentPage in csvPages.indices) {
-                csvPages[currentPage] = page
+            if (currentPage in pageList.indices) {
+                pageList[currentPage] = page
             } else {
-                csvPages.add(page)
+                pageList.add(page)
             }
         }
 
