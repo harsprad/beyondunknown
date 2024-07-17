@@ -1,5 +1,6 @@
 package com.example.beyondunknown
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,14 +13,15 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: BookListAdapter
-    private var bookList: MutableList<Book> = mutableListOf()
+    private lateinit var bookList: MutableList<Book>
 
+    @SuppressLint("NotifyDataSetChanged")
     private val settingsLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             // Reload CSV data and refresh RecyclerView
-            loadCsv()
+            bookList = CsvUtils.loadCsvAsBook(this,"_data.csv")
             adapter.notifyDataSetChanged()
         }
     }
@@ -29,8 +31,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loadCsv()
-
+        bookList = CsvUtils.loadCsvAsBook(this,"_data.csv")
         adapter = BookListAdapter(bookList)
         binding.rvBookList.adapter = adapter
         binding.rvBookList.layoutManager = LinearLayoutManager(this)
@@ -53,23 +54,6 @@ class MainActivity : AppCompatActivity() {
 
             binding.etAddBook.text.clear()
         }
-    }
-
-    private fun loadCsv() {
-        val csvFile = File(getExternalFilesDir(null), "_data.csv")
-        bookList.clear()
-        if (csvFile.exists()) {
-            csvFile.bufferedReader().useLines { lines ->
-                lines.forEach { line -> bookList.add(stringToBook(line)) }
-            }
-        } else {
-            csvFile.createNewFile()
-        }
-    }
-
-    private fun stringToBook(str: String) : Book {
-        val (title, path) = str.split(",", limit = 2)
-        return Book(title.replace("{comma}", ","), path)
     }
 
     private fun stringToPathName(str: String) : String {

@@ -30,11 +30,7 @@ class SecondaryActivity : AppCompatActivity() {
         csvFile = File(getExternalFilesDir(null), book.path)
         Log.d("FilePath", "CSV File path: ${csvFile.absolutePath}") // Log the file path
 
-        if (csvFile.exists()) {
-            loadCsv()
-        } else {
-            csvFile.createNewFile()
-        }
+        pageList = CsvUtils.loadCsv(this, book.path)
 
         currentPage = pageList.size
         updatePageNumber()
@@ -65,10 +61,6 @@ class SecondaryActivity : AppCompatActivity() {
                 finish()
             }
             .show()
-    }
-
-    private fun loadCsv() {
-        csvFile.bufferedReader().useLines { lines -> lines.forEach { pageList.add(it) } }
     }
 
     private fun updatePageNumber() {
