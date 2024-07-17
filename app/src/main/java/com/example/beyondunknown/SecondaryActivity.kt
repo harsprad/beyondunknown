@@ -49,15 +49,14 @@ class SecondaryActivity : AppCompatActivity() {
     private fun updatePageNumber() {
         val pageFieldText = "Page: ${currentPage + 1}"
         binding.tvPageNumber.text = pageFieldText
+        binding.etNumberInput1.text.clear()
+        binding.etNumberInput2.text.clear()
+
         if (currentPage in pageList.indices) {
             val page = pageList[currentPage].split(",")
-            binding.etNumberInput1.text.clear()
-            binding.etNumberInput2.text.clear()
             binding.etNumberInput1.setHint(page[0])
             binding.etNumberInput2.setHint(page[1])
         } else {
-            binding.etNumberInput1.text.clear()
-            binding.etNumberInput2.text.clear()
             binding.etNumberInput1.setHint(R.string.hint_unknown_words)
             binding.etNumberInput2.setHint(R.string.hint_page_length)
         }
