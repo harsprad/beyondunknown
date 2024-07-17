@@ -14,7 +14,7 @@ class SecondaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySecondaryBinding
     private var currentPage = 0
     private lateinit var csvFile: File
-    private lateinit var csvPages: MutableList<String>
+    private var csvPages: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +27,6 @@ class SecondaryActivity : AppCompatActivity() {
 
         csvFile = File(getExternalFilesDir(null), book.path)
         Log.d("FilePath", "CSV File path: ${csvFile.absolutePath}") // Log the file path
-
-        csvPages = mutableListOf()
 
         if (csvFile.exists()) {
             loadCsv()
