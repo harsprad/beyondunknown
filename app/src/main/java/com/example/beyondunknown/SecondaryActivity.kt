@@ -6,11 +6,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.beyondunknown.databinding.ActivitySecondaryBinding
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter
-import java.io.BufferedReader
-import java.io.InputStreamReader
 
 class SecondaryActivity : AppCompatActivity() {
 
