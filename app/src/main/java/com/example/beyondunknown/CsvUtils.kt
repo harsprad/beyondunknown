@@ -2,6 +2,8 @@ package com.example.beyondunknown
 
 import android.content.Context
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStreamWriter
 
 object CsvUtils {
 
@@ -27,4 +29,13 @@ object CsvUtils {
         return loadCsv(context, location).map{ stringToBook(it) }.toMutableList()
     }
 
+    fun saveCsv(context: Context, location: String, list: MutableList<String>){
+        val csvFile = File(context.getExternalFilesDir(null), location)
+        val fileOutputStream = FileOutputStream(csvFile)
+        val outputStreamWriter = OutputStreamWriter(fileOutputStream)
+        outputStreamWriter.use { writer ->
+            list.forEach { writer.append("$it\n") }
+        }
+        fileOutputStream.close()
+    }
 }

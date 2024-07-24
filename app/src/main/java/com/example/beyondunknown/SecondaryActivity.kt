@@ -35,7 +35,7 @@ class SecondaryActivity : AppCompatActivity() {
         currentPage = pageList.size
         updatePageNumber()
 
-        binding.btnSave.setOnClickListener { saveToCsv() }
+        binding.btnSave.setOnClickListener { saveToCsv(book.path) }
         binding.btnPrevious.setOnClickListener { navigatePage(-1) }
         binding.btnNext.setOnClickListener { navigatePage(1) }
 
@@ -79,23 +79,14 @@ class SecondaryActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveToCsv() {
+    private fun saveToCsv(location: String) {
         if (saveToPage() == 1) {
-            saveCsvFile()
+            CsvUtils.saveCsv(this, location, pageList)
             Toast.makeText(this, "Data saved to CSV", Toast.LENGTH_SHORT).show()
             finish()
         } else {
             Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun saveCsvFile() {
-        val fileOutputStream = FileOutputStream(csvFile)
-        val outputStreamWriter = OutputStreamWriter(fileOutputStream)
-        outputStreamWriter.use { writer ->
-            pageList.forEach { writer.append("$it\n") }
-        }
-        fileOutputStream.close()
     }
 
     private fun navigatePage(direction: Int) {
