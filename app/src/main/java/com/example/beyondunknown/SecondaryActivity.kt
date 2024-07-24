@@ -35,7 +35,9 @@ class SecondaryActivity : AppCompatActivity() {
         currentPage = pageList.size
         updatePageNumber()
 
-        binding.btnSave.setOnClickListener { saveToCsv(book.path) }
+
+        binding.btnSave.setOnClickListener { saveToCsv(book.path, finished = false) }
+        binding.btnSaveAndExit.setOnClickListener { saveToCsv(book.path, finished = true) }
         binding.btnPrevious.setOnClickListener { navigatePage(-1) }
         binding.btnNext.setOnClickListener { navigatePage(1) }
 
@@ -79,11 +81,11 @@ class SecondaryActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveToCsv(location: String) {
+    private fun saveToCsv(location: String, finished: Boolean) {
         if (saveToPage() == 1) {
             CsvUtils.saveCsv(this, location, pageList)
             Toast.makeText(this, "Data saved to CSV", Toast.LENGTH_SHORT).show()
-            finish()
+            if (finished) finish()
         } else {
             Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
         }

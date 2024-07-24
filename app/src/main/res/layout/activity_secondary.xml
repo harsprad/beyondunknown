@@ -50,15 +50,6 @@
         app:layout_constraintTop_toBottomOf="@+id/etNumberInput1" />
 
     <Button
-        android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save to CSV and exit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnNext" />
-
-    <Button
         android:id="@+id/btnPrevious"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,4 +64,22 @@
         android:text="Next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etNumberInput2" />
+
+    <Button
+        android:id="@+id/btnSaveAndExit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save and exit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnSave"
+        app:layout_constraintTop_toBottomOf="@+id/btnNext" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        app:layout_constraintEnd_toStartOf="@+id/btnSaveAndExit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnNext" />
 </androidx.constraintlayout.widget.ConstraintLayout>
