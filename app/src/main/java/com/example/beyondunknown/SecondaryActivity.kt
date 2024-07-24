@@ -99,7 +99,10 @@ class SecondaryActivity : AppCompatActivity() {
     }
 
     private fun navigatePage(direction: Int) {
-        saveToPage()
+        if (saveToPage() == 0) {
+            Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
+            return
+        }
         currentPage += direction
         if (currentPage < 0) {
             currentPage = 0
@@ -120,15 +123,15 @@ class SecondaryActivity : AppCompatActivity() {
 
         if (number1.isNotEmpty() || number2.isNotEmpty()) {
 
-            // Only 1 is empty:
+            // Only one field is empty:
             if (number1.isEmpty()) {
                 val hint1 = binding.etNumberInput1.hint.toString()
-                if (hint1.isEmpty()) return 0
+                if (hint1 == getString(R.string.hint_unknown_words)) return 0
                 number1 = hint1
             }
             if (number2.isEmpty()) {
                 val hint2 = binding.etNumberInput2.hint.toString()
-                if (hint2.isEmpty()) return 0
+                if (hint2 == getString(R.string.hint_page_length)) return 0
                 number2 = hint2
             }
 
@@ -140,7 +143,7 @@ class SecondaryActivity : AppCompatActivity() {
             }
         }
 
-        // Both entries either non-empty or empty
+        // Both entries either empty or non-empty
         return 1
     }
 }
