@@ -8,8 +8,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.beyondunknown.databinding.ActivitySecondaryBinding
 import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStreamWriter
 
 class SecondaryActivity : AppCompatActivity() {
 
