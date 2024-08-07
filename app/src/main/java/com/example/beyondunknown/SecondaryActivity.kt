@@ -1,19 +1,16 @@
 package com.example.beyondunknown
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.beyondunknown.databinding.ActivitySecondaryBinding
-import java.io.File
 
 class SecondaryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySecondaryBinding
     private var currentPage = 0
-    private lateinit var csvFile: File
     private var pageList: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,9 +21,6 @@ class SecondaryActivity : AppCompatActivity() {
 
         val book: Book = intent.serializable("EXTRA_BOOK_TITLE")?: Book("Error", "_error.csv")
         binding.tvBookTitle.text = book.title
-
-        csvFile = File(getExternalFilesDir(null), book.path)
-        Log.d("FilePath", "CSV File path: ${csvFile.absolutePath}") // Log the file path
 
         pageList = CsvUtils.loadCsv(this, book.path)
 
