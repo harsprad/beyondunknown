@@ -3,6 +3,7 @@ package com.example.beyondunknown
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.beyondunknown.databinding.ActivitySettingsBinding
@@ -15,6 +16,21 @@ import java.util.zip.ZipOutputStream
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
+
+    private lateinit var tempZipFile: File
+
+    private val saveZipLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            result.data?.data?.let{ uri ->
+                contentResolver.openOutputStream(uri)?.use { outputStream ->
+                    tempZipFile.inputStream().copyTo(outputStream)
+                }
+            }
+            tempZipFile.delete()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +59,7 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.btnGoBack.setOnClickListener{ finish() }
 
-        binding.btnExport.setOnClickListener{ createFile() }
+        binding.btnExport.setOnClickListener{ createZip() }
     }
 
     private fun deleteCsvFiles(directory: File) {
@@ -54,13 +70,22 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun createFile() {
+    private fun createZip() {
+        val externalFilesDir = getExternalFilesDir(null) ?: return
+        tempZipFile = File(externalFilesDir, "temp.zip")
+
+        zipFiles(externalFilesDir, tempZipFile)
+
+        saveZipLauncher.launch(createBlankZip(getBackupFileName()))
+    }
+
+    private fun createBlankZip(title: String): Intent {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/pdf"
-            putExtra(Intent.EXTRA_TITLE, "invoice.pdf")
+            type = "application/zip"
+            putExtra(Intent.EXTRA_TITLE, "$title.zip")
         }
-        startActivity(intent)
+        return intent
     }
 
     private fun zipFiles(sourceDir: File, outputFile: File) {
@@ -74,5 +99,11 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun getBackupFileName(): String {
+        val appName = getString(R.string.app_name_lc_hyphen)
+        val todayDateStr = getDateAsString()
+        return "$appName-backup-$todayDateStr"
     }
 }

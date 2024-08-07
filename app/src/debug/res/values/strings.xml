@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">TestUnknown</string>
+    <string name="app_name_lc_hyphen">test-unknown</string>
     <string name="hint_page_length">Enter words in page</string>
     <string name="hint_unknown_words">Enter unknown words</string>
 </resources>
