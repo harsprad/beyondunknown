@@ -36,6 +36,10 @@ class MainActivity : AppCompatActivity() {
         binding.rvBookList.adapter = adapter
         binding.rvBookList.layoutManager = LinearLayoutManager(this)
 
+        binding.btnStats.setOnClickListener {
+            startActivity(Intent(this, StatsActivity::class.java))
+        }
+
         binding.btnSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             settingsLauncher.launch(intent)

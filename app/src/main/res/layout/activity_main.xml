@@ -9,6 +9,14 @@
     tools:context="com.example.beyondunknown.MainActivity">
 
     <Button
+        android:id="@+id/btnStats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stats"
+        app:layout_constraintEnd_toStartOf="@+id/btnSettings"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/btnSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,7 +31,7 @@
         android:text="Books!"
         android:textSize="35sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/btnSettings"
+        app:layout_constraintEnd_toStartOf="@+id/btnStats"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
