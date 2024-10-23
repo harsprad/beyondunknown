@@ -16,7 +16,7 @@ class StatsActivity : AppCompatActivity() {
         binding.btnGoBack.setOnClickListener { finish() }
 
         binding.boxPlotView.setChart(GraphUtils.createChart(this))
-        binding.boxPlotView.requestLayout() // Requests layout pass
+        binding.boxPlotView.requestLayout() // Requests layout pass (pass?)
         binding.boxPlotView.invalidate()
     }
 }
